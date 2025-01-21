@@ -35,14 +35,18 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        BaseDatos dbHelper = new BaseDatos(this);
 
         // Inicialización de componentes
+
         recyclerView = findViewById(R.id.recyclerView);
         FloatingActionButton fab = findViewById(R.id.fab);
-        homeworkList = new ArrayList<>();
+//        homeworkList = new ArrayList<>();
+        homeworkList = dbHelper.obtenerTareas();
 
         // Crear y configurar el adaptador
-        adapter = new HomeworkAdapter(homeworkList, homework -> showBottomSheet(homework));
+//        adapter = new HomeworkAdapter(homeworkList, homework -> showBottomSheet(homework));
+        adapter = new HomeworkAdapter(homeworkList, this::showBottomSheet);
 
         // Este código sería lo mismo que la anterior línea
         // adapter = new HomeworkAdapter(homeworkList, this::showBottomSheet);
@@ -69,9 +73,12 @@ public class MainActivity extends AppCompatActivity {
             dialog.setArguments(args);
         }
         dialog.setOnHomeworkSavedListener(homework -> {
+            BaseDatos dbHelper = new BaseDatos(this);
                     if (homeworkToEdit == null) {
+                        dbHelper.insertarTarea(homework);
                         homeworkList.add(homework);
                     } else {
+                        dbHelper.actualizarTarea(homework);
                         homeworkList.set(homeworkList.indexOf(homeworkToEdit), homework);
                     }
             adapter.notifyDataSetChanged();
@@ -130,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Confirmar eliminación")
                 .setMessage("¿Estás seguro de que deseas eliminar este deber?")
                 .setPositiveButton("Eliminar", (dialog, which) -> {
+                    BaseDatos dbHelper = new BaseDatos(this);
+                    dbHelper.eliminarTarea(homework.getId());
                     homeworkList.remove(homework);
                     adapter.notifyDataSetChanged();
                 })

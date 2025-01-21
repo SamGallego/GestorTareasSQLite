@@ -31,19 +31,19 @@ public class BaseDatos extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    // Método para insertar una tarea
     public void insertarTarea(Homework homework) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues valores = new ContentValues();
+
         valores.put("subject", homework.getSubject());
         valores.put("description", homework.getDescription());
         valores.put("dueDate", homework.getDueDate());
         valores.put("isCompleted", homework.isCompleted() ? 1 : 0);
+
         db.insert("tareas", null, valores);
         db.close();
     }
 
-    // Método para obtener todas las tareas
     public List<Homework> obtenerTareas() {
         List<Homework> tareas = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -67,21 +67,22 @@ public class BaseDatos extends SQLiteOpenHelper {
         return tareas;
     }
 
-    // Método para actualizar una tarea
     public void actualizarTarea(Homework homework) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues valores = new ContentValues();
+
         valores.put("subject", homework.getSubject());
         valores.put("description", homework.getDescription());
         valores.put("dueDate", homework.getDueDate());
         valores.put("isCompleted", homework.isCompleted() ? 1 : 0);
+
         db.update("tareas", valores, "id = ?", new String[]{String.valueOf(homework.getId())});
         db.close();
     }
 
-    // Método para eliminar una tarea
     public void eliminarTarea(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
+
         db.delete("tareas", "id = ?", new String[]{String.valueOf(id)});
         db.close();
     }
